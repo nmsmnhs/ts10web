@@ -2,11 +2,11 @@ import sqlite3
 import hashlib
 import threading
 import socket
-
+# run server.py first, then client.py to run the code
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server.bind(("localhost", 1234))
-
+# its localhost so it only works on one device for now, iirc u can use a cloud server and change it to an actual ip address..? to make it public or sumth
 server.listen()
 
 conn = sqlite3.connect("userdata.db")
@@ -14,7 +14,6 @@ cur = conn.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS userdata (username TEXT UNIQUE, password TEXT)")
 conn.commit()
 conn.close()
-
 
 def handle_connection(c):
     try:
