@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
 import random
 
-app = Flask(__name__) #referencing this file
+app = Flask(__name__)  # Referencing this file
 
-# dictionary with question, correct answer, and explanation
+# Store the current question
+current_question = None
+
+# Dictionary with question, correct answer, and explanation
 question_bank = [
     {
         "question": "Which word has the underlined part pronounced differently from that of the others? \nA. destroys \nB. controls \nC. predicts \nD. wanders",
@@ -20,39 +23,40 @@ question_bank = [
 # Route to get a random question
 @app.route('/get_question', methods=['GET'])
 def get_question():
-    question_data = random.choice(question_bank)  # Pick a random question
-    return jsonify({"question": question_data["question"]})
+    global current_question
+    current_question = random.choice(question_bank)
+    return jsonify({"question": current_question["question"]})
 
 # Route to check the answer
 @app.route('/submit_answer', methods=['POST'])
 def submit_answer():
+    global current_question
+
+    if not current_question:
+        return jsonify({"message": "No question has been asked yet. Call /get_question first."})
+
     data = request.json
-    user_question = data.get("question", "")
-    user_answer = data.get("answer", "")
+    user_answer = data.get("answer", "").strip()
 
-    # Find the matching question in the bank
-    matched_question = next((q for q in question_bank if q["question"] == user_question), None)
+    correct_answer = current_question["correct_answer"]
+    explanation = current_question["explanation"]
 
-    if matched_question:
-        correct_answer = matched_question["correct_answer"]
-        explanation = matched_question["explanation"]
-
-        if user_answer == correct_answer:
-            return jsonify({
-                "question": user_question,
-                "your_answer": user_answer,
-                "correct_answer": correct_answer,
-                "message": "✅ Correct! 🎉",
-                "explanation": explanation
-            })
-        else:
-            return jsonify({
-                "question": user_question,
-                "your_answer": user_answer,
-                "correct_answer": correct_answer,
-                "message": "❌ Incorrect.",
-                "explanation": explanation
-            })
+    if user_answer.lower() == correct_answer.lower():
+        return jsonify({
+            "question": current_question["question"],
+            "your_answer": user_answer,
+            "correct_answer": correct_answer,
+            "message": "✅ Correct! 🎉",
+            "explanation": explanation
+        })
     else:
-        return jsonify({"message": "Question not found."})
-    
+        return jsonify({
+            "question": current_question["question"],
+            "your_answer": user_answer,
+            "correct_answer": correct_answer,
+            "message": "❌ Incorrect.",
+            "explanation": explanation
+        })
+
+if __name__ == '__main__':
+    app.run(debug=True)
