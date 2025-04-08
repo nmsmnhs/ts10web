@@ -1,0 +1,7 @@
+{% extends "layout.html"%}
+{% block content %}
+    <h1>QUESTION PAGE</h1>
+    {% for questions in question_bank %}
+        <p>Question: {{questions.question}}</p>
+    {% endfor %}
+{% endblock content%}
