@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <label for="question_type">Select the question type you'd like to practice: </label>
+    <select id="question_type">
+        <option value="">--Make a choice--</option>
+        <option value="Phonetics">Phonetics</option>
+        <option value="Stress">Stress</option>
+    </select>
+
+    <button onclick="fetchQuestion()">Get Question</button>
+
+    <div id="question-display"></div>
+
+    <script>
+        function fetchQuestion() {
+        const question_type = document.getElementById("question_type").value;
+
+        switch (question_type) {
+            case "Phonetics":
+            case "Stress":
+                fetch(`http://localhost:5000/get-question?category=${question_type}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("question-display").innerText = data.question;
+                });
+            break;
+            default:
+                document.getElementById("question-display").innerText = "";
+        }
+        }
+    </script>
+</body>
+</html>
+
