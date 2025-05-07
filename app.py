@@ -19,6 +19,24 @@ def question():
     question = random.choice(questions)
     return jsonify(question)
 
+@app.route("/get-answer", methods=["POST","GET"])
+def answer():
+    #receive json package & get id + answer
+    data = request.get_json()
+    question_id = data.get("id")
+    userAnswer = data.get("userAnswer")
+
+    #searching for id
+    for categories in question_bank.values():
+        for q in categories:
+            if q["id"] == question_id:
+                correct = userAnswer == q["answer"].strip().lower()
+                return jsonify({
+                    "correct": correct,
+                    "explanation": q["explanation"]
+                })
+    
+
 if __name__ == '__main__':
     app.run(debug=True)
 

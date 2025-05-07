@@ -12,28 +12,67 @@
         <option value="">--Make a choice--</option>
         <option value="Phonetics">Phonetics</option>
         <option value="Stress">Stress</option>
+        <option value="Sentence_transformation">Sentence transformation</option>
     </select>
 
-    <button onclick="fetchQuestion()">Get Question</button>
+    <button onclick="fetch_question()">Get Question</button>
 
     <div id="question-display"></div>
 
+    <label for="user-answer" id="answer-label"></label>
+    <input type="text" id="user-answer" name="user-answer">
+    <button onclick="submit_answer()">Submit</button>
+
+    <div id="results"></div>
+
     <script>
-        function fetchQuestion() {
+        let current_question = {};
+
+        function fetch_question() {
         const question_type = document.getElementById("question_type").value;
 
         switch (question_type) {
             case "Phonetics":
             case "Stress":
-                fetch(`http://localhost:5000/get-question?category=${question_type}`)
+                fetch(`http://localhost:5000/get-question?category=${question_type}&r=${Math.random()}`)
+                .then(response => response.json())
+                .then(data => {
+                    current_question = data;
+                    document.getElementById("question-display").innerText = data.question;
+                    document.getElementById("answer-label").innerText = "answer with a, b, c, or d:"
+                });
+            break;
+            case "Sentence_transformation":
+                fetch(`http://localhost:5000/get-question?category=${question_type}&r=${Math.random()}`)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById("question-display").innerText = data.question;
+                    document.getElementById("answer-label").innerText = "type in your answer:"
                 });
             break;
             default:
                 document.getElementById("question-display").innerText = "";
         }
+        }
+
+        function submit_answer() {
+        const user_answer = document.getElementById("user-answer").value.trim().toLowerCase();
+
+        fetch(`http://localhost:5000/get-answer`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify ({
+                id: current_question.id,
+                userAnswer: user_answer
+            })
+        })
+        .then(res => res.json())
+        .then(data =>{
+            document.getElementById("results").innerText = `${data.correct == true ? "you're correct!!" : "try again!"} \n ${data.explanation}`
+        }
+        )
         }
     </script>
 </body>
