@@ -1,0 +1,174 @@
+<!--     
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <label for="question_type">Select the question type you'd like to practice: </label>
+    <select id="question_type">
+        <option value="">--Make a choice--</option>
+        <option value="Phonetics">Phonetics</option>
+        <option value="Stress">Stress</option>
+        <option value="Sentence_transformation">Sentence transformation</option>
+    </select>
+
+    <button onclick="fetch_question()">Get Question</button>
+
+    <div id="question-display"></div>
+
+    <label for="user-answer" id="answer-label"></label>
+    <input type="text" id="user-answer" name="user-answer">
+    <button onclick="submit_answer()">Submit</button>
+
+    <div id="results"></div>
+
+    <script>
+        let current_question = {};
+
+        function fetch_question() {
+        const question_type = document.getElementById("question_type").value;
+
+        switch (question_type) {
+            case "Phonetics":
+            case "Stress":
+                fetch(`http://localhost:5000/get-question?category=${question_type}&r=${Math.random()}`)
+                .then(response => response.json())
+                .then(data => {
+                    current_question = data;
+                    document.getElementById("question-display").innerText = data.question;
+                    document.getElementById("answer-label").innerText = "answer with a, b, c, or d:"
+                });
+            break;
+            case "Sentence_transformation":
+                fetch(`http://localhost:5000/get-question?category=${question_type}&r=${Math.random()}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("question-display").innerText = data.question;
+                    document.getElementById("answer-label").innerText = "type in your answer:"
+                });
+            break;
+            default:
+                document.getElementById("question-display").innerText = "";
+        }
+        }
+
+        function submit_answer() {
+        const user_answer = document.getElementById("user-answer").value.trim().toLowerCase();
+
+        fetch(`http://localhost:5000/get-answer`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify ({
+                id: current_question.id,
+                userAnswer: user_answer
+            })
+        })
+        .then(res => res.json())
+        .then(data =>{
+            document.getElementById("results").innerText = `${data.correct == true ? "you're correct!!" : "try again!"} \n ${data.explanation}`
+        }
+        )
+        }
+    </script>
+</body>
+</html>
+//
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Practice</title>
+</head>
+<body>
+    <label for="question_type">Select the question type you'd like to practice: </label>
+    <select id="question_type">
+        <option value="">--Make a choice--</option>
+        <option value="Phonetics">Phonetics</option>
+        <option value="Stress">Stress</option>
+        <option value="Sentence_transformation">Sentence Transformation</option>
+        <option value="Vocabulary">Vocabulary</option>
+        <option value="Grammar">Grammar</option>
+        <option value="Reading">Reading</option>
+        <option value="Wordform">Wordform</option>
+        <option value="Rearrangement">Rearrangement</option>
+        <option value="GuidedCloze">Guided Cloze</option>
+    </select>
+
+    <button onclick="fetch_question()">Get Question</button>
+
+    <div id="question-display"></div>
+
+    <label for="user-answer" id="answer-label" style="display:none;">Your Answer:</label>
+    <input type="text" id="user-answer" name="user-answer" style="display:none;">
+    <button id="submit-btn" onclick="submit_answer()" style="display:none;">Submit</button>
+
+    <div id="results"></div>
+
+    <script>
+    let correctAnswer = '';
+    let explanation = '';
+
+    function fetch_question() {
+        const type = document.getElementById('question_type').value;
+        if (!type) {
+            document.getElementById('question-display').innerHTML = '<p>Please select a question type.</p>';
+            return;
+        }
+        fetch(`questionrandomtest.php?type=${encodeURIComponent(type)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('question-display').innerHTML = `<p>Error: ${data.error}</p>`;
+                    hideAnswerInput();
+                } else {
+                    document.getElementById('question-display').innerHTML = `
+                        <h3>Question:</h3><p>${data.Question}</p>
+                    `;
+                    correctAnswer = data.Answer.trim().toLowerCase();
+                    explanation = data.Explanation;
+                    showAnswerInput();
+                    document.getElementById('results').innerHTML = '';
+                    document.getElementById('user-answer').value = '';
+                }
+            })
+            .catch(() => {
+                document.getElementById('question-display').innerHTML = '<p>Error fetching data.</p>';
+                hideAnswerInput();
+            });
+    }
+
+    function showAnswerInput() {
+        document.getElementById('answer-label').style.display = '';
+        document.getElementById('user-answer').style.display = '';
+        document.getElementById('submit-btn').style.display = '';
+    }
+
+    function hideAnswerInput() {
+        document.getElementById('answer-label').style.display = 'none';
+        document.getElementById('user-answer').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function submit_answer() {
+        const userAnswer = document.getElementById('user-answer').value.trim().toLowerCase();
+        let resultMsg = '';
+        if (userAnswer === correctAnswer) {
+            resultMsg = `<span style="color:green;">Correct!</span>`;
+        } else {
+            resultMsg = `<span style="color:red;">Incorrect.</span> The correct answer was: <b>${correctAnswer}</b>`;
+        }
+        resultMsg += `<br><h4>Explanation:</h4><p>${explanation}</p>`;
+        document.getElementById('results').innerHTML = resultMsg;
+    }
+    </script>
+</body>
+</html>
