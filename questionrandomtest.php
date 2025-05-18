@@ -21,7 +21,7 @@ $conn->set_charset("utf8mb4");
 
 // Get question type from GET or POST
 $type = isset($_GET['type']) ? $_GET['type'] : '';
-$allowed_types = ['dbVocabulary', 'dbGrammar', 'dbPhonetics', 'dbStress', 'dbSentenceTransformation', 'dbGuidedCloze', 'dbRearrangement', 'dbReading', 'dbWordForm']; // Add all allowed table names
+$allowed_types = ['dbVocabulary', 'dbGrammar', 'dbPhonetics', 'dbStress', 'dbSentenceTransformation', 'dbGuidedCloze', 'dbRearrangement', 'dbReading', 'dbWordform']; // Add all allowed table names
 
 
 $type_map = [
@@ -33,7 +33,7 @@ $type_map = [
     'GuidedCloze' => 'dbGuidedCloze',
     'Rearrangement' => 'dbRearrangement',
     'Reading' => 'dbReading',
-    'Wordform' => 'dbWordForm'
+    'Wordform' => 'dbWordform'
 
 ];
 
