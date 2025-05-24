@@ -17,6 +17,7 @@ def question():
     questions = question_bank.get(category, [])
 
     question = random.choice(questions)
+    print(f"serving question from category {category}: {question}")
     return jsonify(question)
 
 @app.route("/get-answer", methods=["POST","GET"])

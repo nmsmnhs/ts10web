@@ -5,10 +5,10 @@ error_reporting(E_ALL);
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-$host = "sql102.infinityfree.com";
-$user = "if0_38953247";
-$password = "rwcG0UxaUUD";
-$dbname = "if0_38953247_dbEngTest";
+$host = "sql.freedb.tech";
+$user = "freedb_SilvEduEng";
+$password = "@5fr7VubE4k*cX4";
+$dbname = "freedb_dbEngTest";
 
 $conn = new mysqli($host, $user, $password, $dbname);
 
@@ -33,7 +33,7 @@ $type_map = [
     'GuidedCloze' => 'dbGuidedCloze',
     'Rearrangement' => 'dbRearrangement',
     'Reading' => 'dbReading',
-    'Wordform' => 'dbWordForm'
+    'WordForm' => 'dbWordForm'
 
 ];
 

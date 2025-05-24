@@ -12,7 +12,12 @@
         <option value="">--Make a choice--</option>
         <option value="Phonetics">Phonetics</option>
         <option value="Stress">Stress</option>
-        <option value="Sentence_transformation">Sentence transformation</option>
+        <option value="SentenceTransformation">Sentence transformation</option>
+        <option value="Grammar">Grammar</option>
+        <option value="WordForm">Word Form</option>
+        <option value="Vocabulary">Vocabulary</option>
+        <option value="GuidedCloze">Guided Cloze</option>
+        <option value="Reading">Reading</option>
     </select>
 
     <button onclick="fetch_question()">Get Question</button>
@@ -34,24 +39,34 @@
         switch (question_type) {
             case "Phonetics":
             case "Stress":
+            case "GuidedCloze":
+            case "Reading":
+            case "Grammar":
+            case "Vocabulary":
+            case "SentenceTransformation":
+            case "WordForm":
                 fetch(`http://localhost:5000/get-question?category=${question_type}&r=${Math.random()}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log("received question:", data);
+
                     current_question = data;
-                    document.getElementById("question-display").innerText = data.question;
-                    document.getElementById("answer-label").innerText = "answer with a, b, c, or d:"
-                });
-            break;
-            case "Sentence_transformation":
-                fetch(`http://localhost:5000/get-question?category=${question_type}&r=${Math.random()}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("question-display").innerText = data.question;
-                    document.getElementById("answer-label").innerText = "type in your answer:"
+                    document.getElementById("question-display").innerHTML = data.question;
+                    const label = (
+                        ["SentenceTransformation", "Rearrangement", "WordForm"].includes(question_type)
+                        ? "type in your answer:"
+                        : "answer with a, b, c, or d:"
+                    );
+                    document.getElementById("answer-label").innerText = label;
+                })
+            .catch(err => {
+                    console.error("error fetching question:", err);
                 });
             break;
             default:
                 document.getElementById("question-display").innerText = "";
+                document.getElementById("answer-label").innerText = "";
+                current_question = {};
         }
         }
 
@@ -70,7 +85,7 @@
         })
         .then(res => res.json())
         .then(data =>{
-            document.getElementById("results").innerText = `${data.correct == true ? "you're correct!!" : "try again!"} \n ${data.explanation}`
+            document.getElementById("results").innerHTML = `${data.correct == true ? "you're correct!!" : "try again!"} \n ${data.explanation}`
         }
         )
         }

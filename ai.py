@@ -5,10 +5,10 @@ from prompt import generate_with_gemini, base_prompt
 
 # connect to your database
 conn = mysql.connector.connect(
-    host="sql102.infinityfree.com",
-    user="if0_38953247",
-    password="Qt13112007",
-    database="if0_38953247_dbEngTest"
+    host="sql.freedb.tech",
+    user="freedb_SilvEduEng",
+    password="@5fr7VubE4k*cX4",
+    database="freedb_dbEngTest"
 )
 
 cursor = conn.cursor()
@@ -27,7 +27,7 @@ def insert_into_db(category, questions):
         )
         cursor.execute(sql, data)   
 
-categories = ["Grammar", "Vocabulary", "Reading", "Wordform", "GuidedCloze", "Phonetics", "Rearrangement", "SentenceTransformation", "Stress"]
+categories = ["Grammar", "Vocabulary", "Reading", "WordForm", "GuidedCloze", "Phonetics", "Rearrangement", "SentenceTransformation", "Stress"]
 for category in categories:
     prompt = base_prompt(category)
     questions = json.loads(generate_with_gemini(prompt))
