@@ -113,22 +113,36 @@ function displayQuestion(data) {
 
 function showAnswerInput(questionType) {
     const answerSection = document.querySelector('.answer-section');
+    const userAnswerTextarea = document.getElementById('user-answer');
+    const radioAnswerABCD = document.getElementById('radio-answer');
+    const radioAnswerTrueFalse = document.getElementById('true-false-answer');
+    const answerLabel = document.getElementById('answer-label');
+    const submitBtn = document.getElementById('submit-btn');
 
-    document.getElementById('answer-label').style.display = 'block';
-    document.getElementById('user-answer').style.display = 'none';
-    document.getElementById('radio-answer').style.display = 'none';
+    answerLabel.style.display = 'block';
+    userAnswerTextarea.style.display = 'none';
+    radioAnswerABCD.style.display = 'none';
+    radioAnswerTrueFalse.style.display = 'none';
+
+    const currentQuestionAnswerType = current_question.answer ? getQuestionType(current_question.answer) : null;
 
     if (questionType === "WordForm" || questionType === "SentenceTransformation") {
-        document.getElementById('user-answer').style.display = 'block';
-        document.getElementById('answer-label').innerText = "Your Answer:";
-    } else if (questionType) {
-        document.getElementById('radio-answer').style.display = 'grid';
+        userAnswerTextarea.style.display = 'block';
+        answerLabel.innerText = "Your Answer:";
+    } else if (currentQuestionAnswerType === 'true_false') {
+        radioAnswerTrueFalse.style.display = 'grid';
+        answerLabel.innerText = "Your Answer:";
         document.querySelectorAll('input[name="user-answer"][type="radio"]').forEach(radio => {
             radio.checked = false;
         });
-        document.getElementById('answer-label').innerText = "Your Answer:";
+    } else if (questionType) {
+        radioAnswerABCD.style.display = 'grid';
+        answerLabel.innerText = "Your Answer:";
+        document.querySelectorAll('input[name="user-answer"][type="radio"]').forEach(radio => {
+            radio.checked = false;
+        });
     }
-    document.getElementById('submit-btn').style.display = 'block';
+    submitBtn.style.display = 'block';
 
 
     setTimeout(() => {
@@ -145,6 +159,7 @@ function hideAnswerUI() {
     document.getElementById('answer-label').style.display = 'none';
     document.getElementById('user-answer').style.display = 'none';
     document.getElementById('radio-answer').style.display = 'none';
+    document.getElementById('true-false-answer').style.display = 'none';
     document.getElementById('submit-btn').style.display = 'none';
     document.getElementById('results').style.display = 'none';
     document.getElementById('results').classList.remove('show');
@@ -173,7 +188,7 @@ function submit_answer() {
             results.classList.add('show');
             return;
         }
-    } else if (document.getElementById('radio-answer').style.display === 'grid') {
+    } else if (document.getElementById('radio-answer').style.display === 'grid' || document.getElementById('true-false-answer').style.display === 'grid') {
         const selectedRadio = document.querySelector('input[name="user-answer"]:checked');
         if (selectedRadio) {
             userAnswer = selectedRadio.value.toLowerCase();
