@@ -3,93 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>English Practice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    
-    <label for="question_type">Select the question type you'd like to practice: </label>
-    <select id="question_type">
-        <option value="">--Make a choice--</option>
-        <option value="Phonetics">Phonetics</option>
-        <option value="Stress">Stress</option>
-        <option value="SentenceTransformation">Sentence transformation</option>
-        <option value="Grammar">Grammar</option>
-        <option value="WordForm">Word Form</option>
-        <option value="Vocabulary">Vocabulary</option>
-        <option value="GuidedCloze">Guided Cloze</option>
-        <option value="Reading">Reading</option>
-    </select>
+    <div class="ui-container">
+        <div class="header">
+            <h1>English Practice Hub</h1>
 
-    <button onclick="fetch_question()">Get Question</button>
+        </div>
+        
+        <div class="question-box">
+            <div class="question-selector">
+                <label for="question_type" class="selector-label">Select the question type you'd like to practice:</label>
+                <div class="styled-select">
+                    <select id="question_type">
+                        <option value="">--Make a choice--</option>
+                        <option value="Phonetics">🔤 Phonetics</option>
+                        <option value="Stress">📍 Stress Patterns</option>
+                        <option value="SentenceTransformation">🔄 Sentence Transformation</option>
+                        <option value="Vocabulary">📚 Vocabulary</option>
+                        <option value="Grammar">⚖️ Grammar</option>
+                        <option value="Reading">📖 Reading Comprehension</option>
+                        <option value="WordForm">✏️ Word Formation</option>
+                        <option value="GuidedCloze">📝 Guided Cloze</option>
+                    </select>
+                </div>
+                <br>
+                <button id="fetch-btn" class="fetch-btn">Get Question</button>
+            </div>
 
-    <div id="question-display"></div>
+            <div id="question-display"></div>
+            
+            <div class="answer-section">
+                <label for="user-answer" id="answer-label">Your Answer:</label>
+                <textarea id="user-answer" name="user-answer" placeholder="Type your answer here..."></textarea>
+                
+                <div id="radio-answer">
+                    <label class="radio-option">
+                        <input type="radio" name="user-answer" value="a"> 
+                        <span>A</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="user-answer" value="b"> 
+                        <span>B</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="user-answer" value="c"> 
+                        <span>C</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="user-answer" value="d"> 
+                        <span>D</span>
+                    </label>
+                </div>
+                
+                <button id="submit-btn">Submit Answer</button>
+            </div>
 
-    <label for="user-answer" id="answer-label"></label>
-    <input type="text" id="user-answer" name="user-answer">
-    <button onclick="submit_answer()">Submit</button>
-
-    <div id="results"></div>
-
-    <script>
-        let current_question = {};
-
-        function fetch_question() {
-        const question_type = document.getElementById("question_type").value;
-
-        switch (question_type) {
-            case "Phonetics":
-            case "Stress":
-            case "GuidedCloze":
-            case "Reading":
-            case "Grammar":
-            case "Vocabulary":
-            case "SentenceTransformation":
-            case "WordForm":
-                fetch(`http://localhost:5000/get-question?category=${question_type}&r=${Math.random()}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("received question:", data);
-
-                    current_question = data;
-                    document.getElementById("question-display").innerHTML = data.question;
-                    const label = (
-                        ["SentenceTransformation", "Rearrangement", "WordForm"].includes(question_type)
-                        ? "type in your answer:"
-                        : "answer with a, b, c, or d:"
-                    );
-                    document.getElementById("answer-label").innerText = label;
-                })
-            .catch(err => {
-                    console.error("error fetching question:", err);
-                });
-            break;
-            default:
-                document.getElementById("question-display").innerText = "";
-                document.getElementById("answer-label").innerText = "";
-                current_question = {};
-        }
-        }
-
-        function submit_answer() {
-        const user_answer = document.getElementById("user-answer").value.trim().toLowerCase();
-
-        fetch(`http://localhost:5000/get-answer`,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify ({
-                id: current_question.id,
-                userAnswer: user_answer
-            })
-        })
-        .then(res => res.json())
-        .then(data =>{
-            document.getElementById("results").innerHTML = `${data.correct == true ? "you're correct!!" : "try again!"} \n ${data.explanation}`
-        }
-        )
-        }
-    </script>
+            <div id="results"></div>
+        </div>
+    </div>
+<script src="script.js"></script>
 </body>
 </html>
-
