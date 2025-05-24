@@ -37,6 +37,9 @@ def answer():
                     "explanation": q["explanation"]
                 })
     
+@app.route('/api/questions', methods=['GET'])
+def get_database():
+    return jsonify(question_bank)
 
 if __name__ == '__main__':
     app.run(debug=True)

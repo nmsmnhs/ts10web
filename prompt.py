@@ -69,7 +69,7 @@ def trans_db():
         for Phonetics, Stress, Grammar, Vocabulary, Reading, and GuidedCloze, provide the multiple choices (a,b,c,d) for the user to choose from
         for SentenceTransformation and WordForm, do not provide the multiple choices (a, b, c, d), leave them as open-ended questions with one or a few words as the answer
         include the question number and choices in the value of the key "question". the value of the key "answer" for all multiple choice questions should only be one letter, which is representative for the correct choice. for Phonetics, only include choices' phonetics in the explanation  
-        for Reading, write the full passage then provide individual multiple-choice questions, each one asking for the correct word about the content of the passage. Each question should include 4 options (A to D), the correct answer letter, and a short explanation. Format it like a list of objects I can use in a database, where each object contains: the full passage and ONLY ONE of the questions with its answer choices (A, B, C, D) AND NOT all questions; the correct answer letter; the explanation for that specific blank or question.”
+        for Reading, write the full passage then provide individual multiple-choice questions, each one asking for the correct word about the content of the passage. Each question should include 4 options (A to D), the correct answer letter or word (for true/false), and a short explanation. Format it like a list of objects I can use in a database, where each object contains: the full passage and ONLY ONE of the questions with its answer choices (A, B, C, D OR True/False) AND NOT all questions; the correct answer letter/words; the explanation for that specific question.”
         for GuidedCloze, write the full paragraph then provide individual multiple-choice questions, each one asking for the correct word for a specific blank in the paragrah. Each question should include 4 options (A to D), the correct answer letter, and a short explanation. Format it like a list of objects I can use in a database, where each object contains: the full paragraph (with all 5 blanks) and ONLY ONE of the questions with its answer choices (A, B, C, D); the correct answer letter; the explanation for that specific blank or question.”
         (e.g. for GuidedCloze:
         {{'GuidedCloze': [{{'id': 'GC001',
@@ -87,7 +87,7 @@ def trans_db():
         {{'GuidedCloze': [{{
             'id': 'REA001', 
             'question': 'Read the passage below and answer the questions that follow.<br><br>The Mekong Delta, also known as the "Rice Bowl of Vietnam," is a vast and fertile region in southern Vietnam.  For centuries, the Mekong River has deposited rich sediment, creating exceptionally productive farmland.  This region is not only famous for its rice production but also for its diverse ecosystems, including extensive mangrove forests, floating markets, and unique wildlife.  The vibrant culture of the Delta, deeply intertwined with the river\'s rhythm, is another captivating aspect.  However, the Delta faces significant environmental challenges, such as saltwater intrusion due to rising sea levels and unsustainable agricultural practices.  Efforts are underway to address these issues and ensure the sustainability of this crucial region.<br><br>1. True or False: The Mekong Delta\'s productivity is primarily due to the Mekong River\'s sediment deposits.',
-            'answer':'T',
+            'answer':'True',
             'explanation':'...'
         }},
         {{
@@ -116,3 +116,4 @@ def trans_db():
             print(f"Parsed JSON object: {c_questions}") # <--- ADD THIS LINE
             break # Stop execution to examine the error
     return question_bank
+

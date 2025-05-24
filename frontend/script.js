@@ -3,6 +3,66 @@ let current_question = {};
 document.getElementById('fetch-btn').addEventListener('click', fetch_questionAndShowUI);
 document.getElementById('submit-btn').addEventListener('click', submit_answer);
 
+function getQuestionType(answer) {
+    const cleanedAnswer = String(answer).trim().toUpperCase();
+    const trueFalseOptions = ['T', 'F', 'TRUE', 'FALSE'];
+    const multipleChoiceOptions = ['A', 'B', 'C', 'D'];
+        if (trueFalseOptions.includes(cleanedAnswer)) {
+            return 'true_false';
+        }
+        else if (multipleChoiceOptions.includes(cleanedAnswer)) {
+             return 'multiple_choice';
+        }
+        return 'open_ended';
+    }
+
+async function processQuestionBank() {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/api/questions');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const questionBank = await response.json();
+            console.log("Question bank fetched successfully!");
+            console.log("--- True/False Questions Found ---");
+
+                let tfCount = 0;
+                let totalCount = 0;
+
+                // Iterate through each category
+                for (const categoryName in questionBank) {
+                    const questionsList = questionBank[categoryName];
+
+                    if (!Array.isArray(questionsList)) {
+                        console.warn(`Category '${categoryName}' did not contain a list of questions. Skipping.`);
+                        continue;
+                    }
+
+                    // Iterate through each question in the current category
+                    questionsList.forEach(q => {
+                        totalCount++;
+                        if (q && 'answer' in q) { // Ensure question object and 'answer' key exist
+                            const questionType = getQuestionType(q.answer);
+                            if (questionType === 'true_false') {
+                                tfCount++;
+                                console.log(`  - Question ID: ${q.id}, Category: ${categoryName}, Answer: '${q.answer}'`);
+                            }
+                        } else {
+                            console.warn(`Question in category '${categoryName}' (ID: ${q ? q.id : 'N/A'}) is missing 'answer' key or malformed.`);
+                        }
+                    });
+                }
+                console.log(`--- Finished Processing ---`);
+                console.log(`Total questions processed: ${totalCount}`);
+                console.log(`Total True/False questions identified: ${tfCount}`);
+
+            } catch (error) {
+                console.error("Failed to fetch or process questions:", error);
+                console.error("Please ensure your Flask backend (app.py) is running on http://127.0.0.1:5000.");
+            }
+        }
+
+document.addEventListener('DOMContentLoaded', processQuestionBank);
 
 async function fetch_question() {
     const question_display = document.getElementById('question-display');
