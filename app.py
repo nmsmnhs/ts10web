@@ -3,18 +3,17 @@ from flask_cors import CORS
 from questions import question_bank
 import random
 
-app = Flask(__name__)  # Referencing this file
+app = Flask(__name__)
 CORS(app)
 
-# Store the current question
 current_question = None
 
-
+#homepage route
 @app.route('/')
 def home():
-    return render_template('dropdown.html')
+    return render_template('dropdown.html') #added since replit runs straight from this file
 
-# Route to get a random question with dropdown bar
+# route to get a random question
 @app.route("/get-question", methods=["GET"])
 def question():
     category = request.args.get("category", "Phonetics")
@@ -23,7 +22,6 @@ def question():
     question = random.choice(questions)
     print(f"serving question from category {category}: {question}")
     return jsonify(question)
-
 
 @app.route("/get-answer", methods=["POST", "GET"])
 def answer():
@@ -42,15 +40,11 @@ def answer():
                     "explanation": q["explanation"]
                 })
 
-
+#get db -> transfer it to script.js -> determine which questions are multiple choice and which are t/f
 @app.route('/api/questions', methods=['GET'])
 def get_database():
     return jsonify(question_bank)
 
-
 if __name__ == '__main__':
     app.run(debug=True)
-    app.run(host="0.0.0.0", port=3000)
-
-#python app.py to get the link, then add /get-question to see backend's response
-#run the dropdown.html file and not this one ;)
+    app.run(host="0.0.0.0", port=3000) #for public replit site
