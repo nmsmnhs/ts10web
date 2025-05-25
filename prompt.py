@@ -3,12 +3,8 @@ import os
 import json
 import re
 
-api_key = os.getenv("API_KEY")
-
-# initialize with your API key
+api_key = os.getenv("API_KEY") #api key hid for security reasons
 genai.configure(api_key=api_key)
-
-# choose the model
 model = genai.GenerativeModel("gemini-2.5-flash-preview-05-20")
 
 def generate_with_gemini(prompt):
@@ -17,13 +13,11 @@ def generate_with_gemini(prompt):
         if response and response.text:
             return response.text.strip()
         else:
-            print(f"DEBUG: Empty response text for prompt: {prompt[:100]}...") # Print partial prompt
-            return "" # Return empty string if no text
+            print(f"DEBUG: Empty response text for prompt: {prompt[:100]}...") #see which one is bugging
+            return ""
     except Exception as e:
         print(f"DEBUG: Error during content generation: {e}")
         return f"error: {e}"
-    
-#def base_prompt(category):
 
 def clean_json(text):
     # remove ```json or ``` and closing ```
@@ -102,7 +96,7 @@ def trans_db():
         
         print(f"DEBUG: Generating content for category: {category}")
         s = get_db(prompt)
-        #print(f"DEBUG: Raw response from get_db for {category}:\n{s[:500]}...") # Print first 500 chars of raw response
+    
         try:
             c_questions = json.loads(s)
             question_bank[category] = c_questions[category]
@@ -110,11 +104,11 @@ def trans_db():
         except json.JSONDecodeError as e:
             print(f"ERROR: JSON decoding failed for category {category}. Error: {e}")
             print(f"Faulty string:\n{s}")
-            # You might want to break or continue here depending on your error handling strategy
+            # catch bugs
             break
         except KeyError as e:
             print(f"KeyError: {e}. 'category' key not found in the parsed JSON.")
-            print(f"Parsed JSON object: {c_questions}") # <--- ADD THIS LINE
-            break # Stop execution to examine the error
+            print(f"Parsed JSON object: {c_questions}")
+            break 
     return question_bank
 
