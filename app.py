@@ -10,6 +10,10 @@ CORS(app)
 current_question = None
 
 
+@app.route('/')
+def home():
+    return render_template('dropdown.html')
+
 # Route to get a random question with dropdown bar
 @app.route("/get-question", methods=["GET"])
 def question():
@@ -20,7 +24,8 @@ def question():
     print(f"serving question from category {category}: {question}")
     return jsonify(question)
 
-@app.route("/get-answer", methods=["POST","GET"])
+
+@app.route("/get-answer", methods=["POST", "GET"])
 def answer():
     #receive json package & get id + answer
     data = request.get_json()
@@ -36,13 +41,16 @@ def answer():
                     "correct": correct,
                     "explanation": q["explanation"]
                 })
-    
+
+
 @app.route('/api/questions', methods=['GET'])
 def get_database():
     return jsonify(question_bank)
 
+
 if __name__ == '__main__':
     app.run(debug=True)
+    app.run(host="0.0.0.0", port=3000)
 
 #python app.py to get the link, then add /get-question to see backend's response
 #run the dropdown.html file and not this one ;)

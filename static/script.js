@@ -1,7 +1,12 @@
 let current_question = {};
 
-document.getElementById('fetch-btn').addEventListener('click', fetch_questionAndShowUI);
-document.getElementById('submit-btn').addEventListener('click', submit_answer);
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('fetch-btn').addEventListener('click', fetch_questionAndShowUI);
+    document.getElementById('submit-btn').addEventListener('click', submit_answer);
+
+    processQuestionBank();
+});
 
 function getQuestionType(answer) {
     const cleanedAnswer = String(answer).trim().toUpperCase();
@@ -18,7 +23,7 @@ function getQuestionType(answer) {
 
 async function processQuestionBank() {
     try {
-        const response = await fetch('http://127.0.0.1:5000/api/questions');
+        const response = await fetch('https://b982ace8-9b10-45a0-ae5c-7c004cc46047-00-205szs3wf7kek.pike.replit.dev:3000/api/questions');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -82,7 +87,7 @@ async function fetch_question() {
     question_display.classList.add('show');
 
     try {
-        const response = await fetch(`http://localhost:5000/get-question?category=${encodeURIComponent(type)}&r=${Math.random()}`);
+        const response = await fetch(`https://b982ace8-9b10-45a0-ae5c-7c004cc46047-00-205szs3wf7kek.pike.replit.dev:3000/get-question?category=${encodeURIComponent(type)}&r=${Math.random()}`);
         const data = await response.json();
 
         if (data.error) {
@@ -204,7 +209,7 @@ function submit_answer() {
         return;
     }
 
-    fetch(`http://localhost:5000/get-answer`, {
+    fetch(`https://b982ace8-9b10-45a0-ae5c-7c004cc46047-00-205szs3wf7kek.pike.replit.dev:3000/get-answer`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

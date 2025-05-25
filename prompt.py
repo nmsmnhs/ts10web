@@ -3,9 +3,10 @@ import os
 import json
 import re
 
+api_key = os.getenv("API_KEY")
 
 # initialize with your API key
-genai.configure(api_key="AIzaSyC2kerSN23bk9hU0Itub-m8c3HbCXeWeVI")
+genai.configure(api_key=api_key)
 
 # choose the model
 model = genai.GenerativeModel("gemini-2.5-flash-preview-05-20")
@@ -39,7 +40,7 @@ categories = ["Grammar", "Vocabulary", "Reading", "WordForm", "GuidedCloze", "Ph
 
 def trans_db():
     for category in categories:
-        prompt = f'''generate 2 questions for the category {category} as JSON with this format
+        prompt = f'''generate 10 questions for the category {category} as JSON with this format
             {{"{category}": [  
                 {{"id":"(acronym for category)001",  
                 "question":"...(question content)... <br>A...<br>B...<br>C...<br>D... (question choices)",  
@@ -60,7 +61,7 @@ def trans_db():
         Phonetics: Which word has the underlined part pronounced differently from that of the others? (e.g. A destroy<u>s</u>  B. control<u>s</u>  C. predict<u>s</u>  D. wander<u>s</u>; A l<u>a</u>bel  B. c<u>a</u>mpus  C. n<u>a</u>tion  D. par<u>a</u>de)
         for Stress and Phonetics, consider the conventional IPA pronunciation - in which an apostrophe is placed before the stressed syllable - to provide the questions and answers (including british - american differences). include the apostrophe only in the explanation, not the question. for Phonetics, only compare the sound of the underlined part and not the part next to it (e.g. w<u>ea</u>ther is /e/ and not /eð/)   
         Vocabulary: Which word fits the blank best (usually asked in contexts like conversations, news, or academic reports)
-        for GuidedCloze generate 1 medium-length paragraph with 5 blanks (questions) each; and for Reading generate 1 passages (at least 2 paragraphs) with 1 true/false questions and 2 multiple choice questions (including "main topic" and "rename the passage" questions).  
+        for GuidedCloze generate 1-2 medium-length paragraph with 5 blanks (questions) each; and for Reading generate 1-2 passages (at least 2 paragraphs) with 2 true/false questions and 3 multiple choice questions (including "main topic" and "rename the passage" questions).  
         SentenceTransformation: Finish each of the following sentences in such a way that it means almost the sameas the sentence printed before it (e.g. The children like making models of animals in their free time. → The children are keen ________________)
         WordForm: Use the correct form of the word given in each sentence (e.g. Food __________ is necessary for a camping tip. (prepare) → preparation; We need to ____________ our house to welcome the new year (beauty) → beautify)
         Grammar: (usually there is no question, just a fill-in-the-blank multiple choice. e.g. Helen: I’ve got to help my mom with the housework so I can’t go with you tonight. Tom: What a pity! I wish you ______ with me.A. goes  B. go  C. can go  D. could go; Jane: There’s a crack in the pipe in my kitchen. What should I do?Annie: You should ______ a plumber check it tomorrow.A. have  B. having  C. allow  D. allowing)
@@ -69,8 +70,8 @@ def trans_db():
         for Phonetics, Stress, Grammar, Vocabulary, Reading, and GuidedCloze, provide the multiple choices (a,b,c,d) for the user to choose from
         for SentenceTransformation and WordForm, do not provide the multiple choices (a, b, c, d), leave them as open-ended questions with one or a few words as the answer
         include the question number and choices in the value of the key "question". the value of the key "answer" for all multiple choice questions should only be one letter, which is representative for the correct choice. for Phonetics, only include choices' phonetics in the explanation  
-        for Reading, write the full passage then provide individual multiple-choice questions, each one asking for the correct word about the content of the passage. Each question should include 4 options (A to D), the correct answer letter or word (for true/false), and a short explanation. Format it like a list of objects I can use in a database, where each object contains: the full passage and ONLY ONE of the questions with its answer choices (A, B, C, D OR True/False) AND NOT all questions; the correct answer letter/words; the explanation for that specific question.”
-        for GuidedCloze, write the full paragraph then provide individual multiple-choice questions, each one asking for the correct word for a specific blank in the paragrah. Each question should include 4 options (A to D), the correct answer letter, and a short explanation. Format it like a list of objects I can use in a database, where each object contains: the full paragraph (with all 5 blanks) and ONLY ONE of the questions with its answer choices (A, B, C, D); the correct answer letter; the explanation for that specific blank or question.”
+        for Reading, write the full passage(s) then provide individual multiple-choice questions, each one asking for the correct word about the content of the passage. Each question should include 4 options (A to D), the correct answer letter or word (for true/false), and a short explanation. Format it like a list of objects I can use in a database, where each object contains: the full passage and ONLY ONE of the questions with its answer choices (A, B, C, D OR True/False) AND NOT all questions; the correct answer letter/words; the explanation for that specific question.”
+        for GuidedCloze, write the full paragraph(s) then provide individual multiple-choice questions, each one asking for the correct word for a specific blank in the paragrah. Each question should include 4 options (A to D), the correct answer letter, and a short explanation. Format it like a list of objects I can use in a database, where each object contains: the full paragraph (with all 5 blanks) and ONLY ONE of the questions with its answer choices (A, B, C, D); the correct answer letter; the explanation for that specific blank or question.”
         (e.g. for GuidedCloze:
         {{'GuidedCloze': [{{'id': 'GC001',
           'question': 'My brother is a talented musician. He (1) ______ the guitar since he was very young, and he's incredibly good at it.  He often (2) ______ in local pubs on weekends, and sometimes he even (3) ______ his own songs. His friends always (4) ______ him, and he always (5) ______ to their requests to play his favourite songs.<br>1. A. plays B. has been playing C. is playing D. played',
