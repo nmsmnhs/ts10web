@@ -19,7 +19,7 @@ body {
     justify-content: center;
     padding: 20px;
     color: #1f2937;
-
+    user-select: none;
 }
 body::before {
     content: "";
@@ -47,6 +47,11 @@ body::before {
     animation: slideUp 0.6s ease-out;
 }
 
+@media screen and (max-width: 750px) {
+    .ui-container {
+        max-width: 75vw;
+    }
+}
 @keyframes slideUp {
     from {
         opacity: 0;
@@ -112,6 +117,7 @@ body::before {
     cursor: pointer;
     transition: all 0.3s ease;
     min-width: 280px;
+    max-width: 50vw;
     font-weight: 500;
 }
 
@@ -361,8 +367,8 @@ grid-template-columns: repeat(4, 1fr);
 }
 
 .correct-result {
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
-    border-color: #bbf7d0 !important;
+    background: linear-gradient(135deg, #f2fef2 0%, #beffc8 100%) !important; 
+    border-color: #32ff78 !important;
 }
 
 .correct-result h4 {
@@ -374,8 +380,8 @@ grid-template-columns: repeat(4, 1fr);
 }
 
 .incorrect-result {
-    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%) !important;
-    border-color: #fecaca !important;
+    background: linear-gradient(135deg, #fef2f2 0%, #ffbebe 100%) !important;
+    border-color: #ff7832 !important;
 }
 
 .incorrect-result h4 {

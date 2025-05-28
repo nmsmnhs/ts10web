@@ -188,6 +188,9 @@ function submit_answer() {
 
     if (document.getElementById('user-answer').style.display === 'block') {
         userAnswer = document.getElementById('user-answer').value.trim().toLowerCase();
+        if (userAnswer && !/[.!?]$/.test(userAnswer) && document.getElementById('question_type').value == "SentenceTransformation") {
+            userAnswer = userAnswer + ".";
+          }
         if (userAnswer === '') {
             results.innerHTML = '<div class="error"><p>Please enter your answer.</p></div>';
             results.classList.add('show');
@@ -222,12 +225,13 @@ function submit_answer() {
     .then(res => res.json())
     .then(data => {
         let resultMsg = '';
+            results.classList.remove('border', 'correct-result', 'incorrect-result');
         if (data.correct === true) {
             results.classList.add('border', 'correct-result');
             resultMsg = `<span style="color:#15803d; font-weight: 700; font-size: 18px;">✅ Correct! Well done!</span>`;
         } else {
             results.classList.add('border', 'incorrect-result');
-            resultMsg = `<span style="color:#dc2626; font-weight: 700; font-size: 18px;">❌ Incorrect.</span>`;
+            resultMsg = `<span style="color:#fa2323; font-weight: 700; font-size: 18px;">❌ Incorrect.</span>`;
         }
         resultMsg += `<h4>Explanation:</h4><p>${data.explanation}</p>`;
         results.innerHTML = resultMsg;
