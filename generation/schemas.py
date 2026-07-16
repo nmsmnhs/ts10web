@@ -13,6 +13,7 @@ class QuestionCandidate(BaseModel):
     question_text: str = Field(min_length=1)
     options: list[str] | None = None
     correct_answer: str = Field(min_length=1)
+    underline_span: tuple[int, int] | None = None
 
     @model_validator(mode="after")
     def check_options_match_type(self):
