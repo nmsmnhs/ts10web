@@ -16,5 +16,3 @@ def generate_all(categories: list[str], count_per_category: int) -> dict[str, Pa
             # network/API failure for this category — log and continue, don't kill the batch
             results[category] = ParseResult(errors=[f"[{category}] Generation failed: {e}"])
     return results
-
-print(generate_for_category("Phonetics", 2))
