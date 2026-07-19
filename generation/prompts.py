@@ -1,3 +1,7 @@
+## BUG: guided cloze recognizes each paragraph as 1 question
+## => asking for 3 gives 3 paragraphs and 12 blank spaces/questions
+## fix later
+
 CATEGORY_INSTRUCTIONS: dict[str, str] = {
     "Reading": (
         "Write a short passage (120-180 words) suitable for upper-intermediate "

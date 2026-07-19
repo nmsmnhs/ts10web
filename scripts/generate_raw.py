@@ -9,7 +9,7 @@ ALL_CATEGORIES: tuple[str, ...] = get_args(Category)
 
 
 def _print_candidate(i: int, candidate: QuestionCandidate) -> None:
-    print(f"  --- candidate {i} ---")
+    print(f"  candidate {i}")
     print(f"  {candidate.model_dump_json(indent=2)}")
 
 
